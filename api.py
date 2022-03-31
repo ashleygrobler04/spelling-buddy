@@ -1,8 +1,10 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Resource, Api
+from flask_cors import CORS
 import random
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 api = Api(app)
 
 
@@ -19,9 +21,10 @@ class helloWorld(Resource):
         return currentWord
 
     def get(self):
-        return {
-            "word": self.findWord()
-        }
+        response = jsonify({'word': self.findWord()})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
 
 
 api.add_resource(helloWorld, "/")
